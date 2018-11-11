@@ -1,0 +1,26 @@
+１．以下の項目は自動増分整数（integer）で定義する。
+
+　　・施主マスタの「施主コード」
+　　・物件マスタの「物件コード」
+　　・施工データの「データＮｏ．」
+　　・郵便番号マスタの「データＮｏ．」
+
+２．設計書では、自動増分整数をserial型で定義する。
+
+　　（例）定　義：CREATE TABLE m_sekou (sko_no selial);
+　　　　　↓
+　　　　　実　態：CREATE　SEQUENCE m_sekou_sko_no_seq;
+　　　　　　　　CREATE TABLE m_sekou (sko_no integer DEFAULT nextval('m_sekou_sko_no_seq') NOT NULL);
+
+３．移行時は、自動増分整数の項目（主キー）もそのままセットする。
+
+４．移行後、各項目のシーケンスを「最大値＋1」で初期化する。
+　　ただし、郵便番号マスタの「データＮｏ．」は除く。
+
+　　　SELECT SETVAL('<テーブル名>_<項目名>_seq', <最大値+1>, false);
+
+５．郵便番号マスタは日本郵便のデータを取込時にシーケンスを初期化する。
+
+　　（1）DELETE FROM m_postal;
+　　（2）SELECT SETVAL('m_postal_pos_seqno_seq', 1, false);
+　　（3）INSERT INTO m_postal ( ) VALUES( ); 
